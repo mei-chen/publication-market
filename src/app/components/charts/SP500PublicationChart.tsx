@@ -441,6 +441,38 @@ export default function SP500PublicationChart() {
 
   return (
     <div className="relative w-full max-w-[1000px] mx-auto bg-white p-4 rounded-lg shadow-md">
+      {/* Info icon positioned at bottom right */}
+      <div className="absolute bottom-4 right-4 z-10">
+        <div className="group relative">
+          {/* Info Icon Button */}
+          <button 
+            className="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center shadow-md hover:bg-blue-700 transition-all"
+            aria-label="Show instructions"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <path d="M12 16v-4"></path>
+              <path d="M12 8h.01"></path>
+            </svg>
+          </button>
+          
+          {/* Instructions Tooltip */}
+          <div className="absolute bottom-full right-0 mb-3 w-80 md:w-96 bg-white p-5 rounded-lg border border-gray-200 shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-20">
+            <div className="absolute -bottom-2 right-4 w-4 h-4 bg-white rotate-45 border-r border-b border-gray-200"></div>
+            <p className="mb-3 text-base font-semibold text-gray-800">Instructions</p>
+            <ul className="list-disc pl-5 mb-4 space-y-1.5 text-sm text-gray-700">
+              <li>Use the <span className="font-medium text-gray-900">Lag</span> slider to adjust the time offset between S&P 500 returns and publication growth rates</li>
+              <li>Switch between <span className="font-medium text-gray-900">Normal</span> and <span className="font-medium text-gray-900">Lagged</span> comparison modes to see different relationships</li>
+              <li>Hover over data points to see detailed information for specific years</li>
+            </ul>
+            
+            <div className="mt-4 pt-3 border-t border-gray-200">
+              <p className="font-medium text-gray-900 text-sm">Analysis Tip:</p>
+              <p className="text-sm text-gray-700">A correlation coefficient closer to 1 indicates a stronger positive relationship, while a value closer to -1 indicates a stronger negative relationship. Values near 0 suggest little to no correlation.</p>
+            </div>
+          </div>
+        </div>
+      </div>
       <div className="flex flex-col items-center">
         <div className="w-full mb-6 p-6 bg-gray-50 rounded-lg shadow-sm border border-gray-100">
           <div className="flex flex-col md:flex-row justify-between items-center gap-6 mb-5">
@@ -520,19 +552,7 @@ export default function SP500PublicationChart() {
           className="absolute hidden bg-white p-2 rounded shadow-lg border border-gray-200 text-sm z-10"
         />
         
-        <div className="mt-8 text-sm text-gray-700 max-w-2xl mx-auto bg-gray-50 p-5 rounded-lg border border-gray-100 shadow-sm">
-          <p className="mb-3 text-base font-semibold text-gray-800">Instructions</p>
-          <ul className="list-disc pl-5 mb-4 space-y-1.5">
-            <li>Use the <span className="font-medium text-gray-900">Lag</span> slider to adjust the time offset between S&P 500 returns and publication growth rates</li>
-            <li>Switch between <span className="font-medium text-gray-900">Normal</span> and <span className="font-medium text-gray-900">Lagged</span> comparison modes to see different relationships</li>
-            <li>Hover over data points to see detailed information for specific years</li>
-          </ul>
-          
-          <div className="mt-4 pt-3 border-t border-gray-200">
-            <p className="font-medium text-gray-900">Analysis Tip:</p>
-            <p>A correlation coefficient closer to 1 indicates a stronger positive relationship, while a value closer to -1 indicates a stronger negative relationship. Values near 0 suggest little to no correlation.</p>
-          </div>
-        </div>
+
       </div>
     </div>
   );

@@ -2,7 +2,6 @@
 
 import { useEffect } from 'react';
 import Link from 'next/link';
-import { ArrowRight } from 'lucide-react';
 import SP500PublicationChart from './components/charts/SP500PublicationChart';
 
 export default function Home() {
@@ -34,7 +33,10 @@ export default function Home() {
             href="/correlation"
           >
             View Detailed Analysis
-            <ArrowRight className="w-5 h-5 ml-1" />
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="ml-1">
+              <path d="M5 12h14"></path>
+              <path d="m12 5 7 7-7 7"></path>
+            </svg>
           </Link>
         </div>
       </main>
