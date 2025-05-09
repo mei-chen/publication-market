@@ -21,7 +21,7 @@ export default function SP500PublicationChart() {
   const [dimensions, setDimensions] = useState<ChartDimensions>({
     width: 900,
     height: 500,
-    margin: { top: 50, right: 100, bottom: 80, left: 80 }
+    margin: { top: 50, right: 180, bottom: 80, left: 80 }
   });
   const [lag, setLag] = useState<number>(0);
   const [comparisonMode, setComparisonMode] = useState<'normal' | 'lagged'>('normal');
@@ -108,7 +108,7 @@ export default function SP500PublicationChart() {
       setDimensions({
         width: containerWidth,
         height: containerWidth * 0.6,
-        margin: { top: 50, right: 100, bottom: 80, left: 80 }
+        margin: { top: 50, right: 180, bottom: 80, left: 80 }
       });
     };
 
@@ -388,7 +388,7 @@ export default function SP500PublicationChart() {
     // Add legend
     const legend = svg.append('g')
       .attr('class', 'legend')
-      .attr('transform', `translate(${width - margin.right + 20}, ${margin.top})`);
+      .attr('transform', `translate(${width - margin.right + 30}, ${margin.top})`);
 
     // Legend title
     legend.append('text')
@@ -426,7 +426,7 @@ export default function SP500PublicationChart() {
     // Add correlation info with color based on value
     svg.append('text')
       .attr('class', 'correlation-info')
-      .attr('x', width - margin.right + 20)
+      .attr('x', width - margin.right + 30)
       .attr('y', margin.top + 70)
       .style('font-size', '12px')
       .style('fill', correlationValue < 0 ? '#dc2626' : '#16a34a') // Red for negative, green for positive
