@@ -389,12 +389,12 @@ export default function SP500PublicationChart() {
   return (
     <div className="relative w-full max-w-[1000px] mx-auto bg-white p-4 rounded-lg shadow-md">
       <div className="flex flex-col items-center">
-        <div className="w-full mb-6 p-6 bg-gray-50 rounded-lg shadow-sm">
+        <div className="w-full mb-6 p-6 bg-gray-50 rounded-lg shadow-sm border border-gray-100">
           <div className="flex flex-col md:flex-row justify-between items-center gap-6 mb-5">
             <div className="flex flex-col w-full md:w-auto gap-2">
               <div className="flex items-center justify-between">
                 <span className="font-semibold text-gray-800">Lag (Years)</span>
-                <span className="text-sm font-mono bg-white px-3 py-1.5 rounded-md border border-gray-300 shadow-sm text-gray-800 font-medium">{lag}</span>
+                <span className="text-sm font-mono bg-white px-3 py-1.5 rounded-md border shadow-sm text-gray-800 font-medium">{lag}</span>
               </div>
               <input
                 type="range"
@@ -404,7 +404,7 @@ export default function SP500PublicationChart() {
                 onChange={(e) => setLag(parseInt(e.target.value))}
                 className="w-full md:w-60 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
               />
-              <div className="flex justify-between text-xs text-gray-700">
+              <div className="flex justify-between text-xs text-gray-600 px-0.5">
                 <span>0</span>
                 <span>5</span>
                 <span>10</span>
@@ -416,20 +416,20 @@ export default function SP500PublicationChart() {
               <div className="flex gap-2">
                 <button
                   onClick={() => setComparisonMode('normal')}
-                  className={`px-4 py-2 rounded-md font-medium transition-all ${
+                  className={`px-4 py-2 rounded-md font-medium text-sm transition-colors ${
                     comparisonMode === 'normal' 
                       ? 'bg-blue-600 text-white shadow-md' 
-                      : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-100'
+                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                   }`}
                 >
                   Normal
                 </button>
                 <button
                   onClick={() => setComparisonMode('lagged')}
-                  className={`px-4 py-2 rounded-md font-medium transition-all ${
+                  className={`px-4 py-2 rounded-md font-medium text-sm transition-colors ${
                     comparisonMode === 'lagged' 
                       ? 'bg-blue-600 text-white shadow-md' 
-                      : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-100'
+                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                   }`}
                 >
                   Lagged
@@ -439,19 +439,17 @@ export default function SP500PublicationChart() {
             
             <div className="flex flex-col w-full md:w-auto gap-2">
               <span className="font-semibold text-gray-800">Correlation</span>
-              <div className="text-lg font-mono bg-white px-4 py-2 rounded-md border border-gray-300 shadow-sm text-gray-800"
-                style={{ color: correlationValue > 0 ? '#047857' : correlationValue < 0 ? '#b91c1c' : '#1f2937' }}
-              >
+              <div className="text-lg font-mono bg-white px-4 py-2 rounded-md border shadow-sm text-gray-800 font-medium">
                 {correlationValue.toFixed(4)}
               </div>
             </div>
           </div>
           
-          <div className="text-sm text-gray-700 bg-white p-3 rounded-md border border-gray-200">
+          <div className="text-sm text-gray-700 bg-white p-3 rounded-md border border-gray-100">
             {comparisonMode === 'normal' ? (
               <p>Comparing S&P 500 returns with publication growth rates from the same years.</p>
             ) : (
-              <p>Comparing S&P 500 returns with publication growth rates from {lag} year{lag !== 1 ? 's' : ''} earlier.</p>
+              <p>Comparing S&P 500 returns with publication growth rates from <span className="font-semibold">{lag} year{lag !== 1 ? 's' : ''}</span> earlier.</p>
             )}
           </div>
         </div>
@@ -467,17 +465,17 @@ export default function SP500PublicationChart() {
           className="absolute hidden bg-white p-2 rounded shadow-lg border border-gray-200 text-sm z-10"
         />
         
-        <div className="mt-8 text-sm text-gray-700 max-w-2xl mx-auto bg-gray-50 p-4 rounded-lg shadow-sm">
-          <p className="mb-3 font-semibold text-gray-800">Instructions:</p>
+        <div className="mt-8 text-sm text-gray-700 max-w-2xl mx-auto bg-gray-50 p-5 rounded-lg border border-gray-100 shadow-sm">
+          <p className="mb-3 text-base font-semibold text-gray-800">Instructions</p>
           <ul className="list-disc pl-5 mb-4 space-y-1.5">
             <li>Use the <span className="font-medium text-gray-900">Lag</span> slider to adjust the time offset between S&P 500 returns and publication growth rates</li>
             <li>Switch between <span className="font-medium text-gray-900">Normal</span> and <span className="font-medium text-gray-900">Lagged</span> comparison modes to see different relationships</li>
             <li>Hover over data points to see detailed information for specific years</li>
           </ul>
           
-          <div className="bg-blue-50 border-l-4 border-blue-500 p-3 rounded">
-            <p className="font-medium text-blue-800">Analysis Tip:</p>
-            <p className="text-blue-700">A correlation coefficient closer to 1 indicates a strong positive relationship, while a value closer to -1 indicates a strong negative relationship. Values near 0 suggest little to no correlation.</p>
+          <div className="mt-4 pt-3 border-t border-gray-200">
+            <p className="font-medium text-gray-900">Analysis Tip:</p>
+            <p>A correlation coefficient closer to 1 indicates a stronger positive relationship, while a value closer to -1 indicates a stronger negative relationship. Values near 0 suggest little to no correlation.</p>
           </div>
         </div>
       </div>
