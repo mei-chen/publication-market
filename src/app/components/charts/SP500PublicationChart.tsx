@@ -57,14 +57,8 @@ export default function SP500PublicationChart() {
   
   const chartData = applyLag(baseChartData, lag);
   
-  // Calculate correlation when lag or comparison mode changes
-  useEffect(() => {
-    const correlation = calculateCorrelation(chartData);
-    setCorrelationValue(correlation);
-  }, [lag, comparisonMode, chartData]);
-  
   // Function to calculate Pearson correlation coefficient with lag
-  const calculateCorrelation = (data: LaggedDataPoint[]) => {
+  const calculateCorrelation = useCallback((data: LaggedDataPoint[]) => {
     // Filter out data points where either value is null after applying lag
     const filteredData = data.filter(d => {
       if (comparisonMode === 'normal') {
@@ -98,7 +92,15 @@ export default function SP500PublicationChart() {
     }
 
     return numerator / Math.sqrt(xDenominator * yDenominator);
-  };
+  }, [comparisonMode]);
+  
+  // Calculate correlation when lag or comparison mode changes
+  useEffect(() => {
+    const correlation = calculateCorrelation(chartData);
+    setCorrelationValue(correlation);
+  }, [lag, comparisonMode, chartData, calculateCorrelation]);
+  
+
 
   useEffect(() => {
     const handleResize = () => {
@@ -168,27 +170,70 @@ export default function SP500PublicationChart() {
       .tickFormat(d => `${d}%`)
       .tickSizeOuter(0);
 
-    // Add x-axis
+    // Add x-axis with improved visibility
     g.append('g')
       .attr('class', 'x-axis')
       .attr('transform', `translate(0,${innerHeight})`)
-      .call(xAxis);
+      .call(xAxis)
+      .attr('stroke-width', 1.5)
+      .selectAll('text')
+      .attr('font-size', '12px')
+      .attr('font-weight', '500')
+      .attr('fill', '#333');
 
-    // Add y-axis
+    // Add y-axis with improved visibility
     g.append('g')
       .attr('class', 'y-axis')
-      .call(yAxis);
+      .call(yAxis)
+      .attr('stroke-width', 1.5)
+      .selectAll('text')
+      .attr('font-size', '12px')
+      .attr('font-weight', '500')
+      .attr('fill', '#333');
 
-    // Add zero line
+    // Add grid lines for better readability
+    g.selectAll('grid-line-y')
+      .data(yScale.ticks())
+      .enter()
+      .append('line')
+      .attr('class', 'grid-line-y')
+      .attr('x1', 0)
+      .attr('x2', innerWidth)
+      .attr('y1', d => yScale(d))
+      .attr('y2', d => yScale(d))
+      .attr('stroke', '#d4d4d4')
+      .attr('stroke-width', 0.7);
+      
+    // Add a border around the chart area for better visibility
+    g.append('rect')
+      .attr('width', innerWidth)
+      .attr('height', innerHeight)
+      .attr('fill', 'none')
+      .attr('stroke', '#333')
+      .attr('stroke-width', 1.5);
+
+    g.selectAll('grid-line-x')
+      .data(xScale.ticks())
+      .enter()
+      .append('line')
+      .attr('class', 'grid-line-x')
+      .attr('x1', d => xScale(d))
+      .attr('x2', d => xScale(d))
+      .attr('y1', 0)
+      .attr('y2', innerHeight)
+      .attr('stroke', '#d4d4d4')
+      .attr('stroke-width', 0.7);
+
+    // Add zero line with improved visibility
     g.append('line')
       .attr('class', 'zero-line')
       .attr('x1', 0)
       .attr('x2', innerWidth)
       .attr('y1', yScale(0))
       .attr('y2', yScale(0))
-      .attr('stroke', '#888')
+      .attr('stroke', '#555')
       .attr('stroke-dasharray', '4')
-      .attr('stroke-width', 1);
+      .attr('stroke-width', 1.5);
 
     // Add scatter plot points
     g.selectAll('.scatter-point')
@@ -208,7 +253,7 @@ export default function SP500PublicationChart() {
       .attr('stroke', '#fff')
       .attr('stroke-width', 1.5)
       .attr('opacity', 0.7)
-      .on('mouseover', function(event, d) {
+      .on('mouseover', function() {
         d3.select(this)
           .attr('r', 8)
           .attr('stroke-width', 2)
@@ -259,11 +304,11 @@ export default function SP500PublicationChart() {
         {x: xMax, y: slope * xMax + intercept}
       ];
       
-      // Add the regression line
+      // Add the regression line with color based on correlation value
       g.append('path')
         .datum(regressionPoints)
         .attr('fill', 'none')
-        .attr('stroke', '#ff7f0e')
+        .attr('stroke', correlationValue < 0 ? '#dc2626' : '#16a34a') // Red for negative, green for positive
         .attr('stroke-width', 2)
         .attr('stroke-dasharray', '5,5')
         .attr('d', regressionLine);
@@ -272,8 +317,9 @@ export default function SP500PublicationChart() {
     // Add event handlers for scatter points
     g.selectAll('.scatter-point')
       .each(function(d: any) {
+        // Using any here to avoid TypeScript errors with d3's typing
         const point = d3.select(this);
-        point.on('mouseover', function(event) {
+        point.on('mouseover', function(event: any) {
           const pubGrowthValue = comparisonMode === 'normal' 
             ? d.publication_growth_rate 
             : d.lagged_publication_growth_rate;
@@ -316,21 +362,27 @@ export default function SP500PublicationChart() {
       .style('font-weight', 'bold')
       .text(`Publication Growth Rate vs S&P 500 Returns ${comparisonMode === 'lagged' ? `(${lag} Year Lag)` : ''} (${chartData[0].year}-${chartData[chartData.length - 1].year})`);
 
-    // Add x-axis label
+    // Add x-axis label with improved visibility
     g.append('text')
       .attr('class', 'x-axis-label')
       .attr('x', innerWidth / 2)
       .attr('y', innerHeight + 40)
       .attr('text-anchor', 'middle')
+      .attr('font-size', '14px')
+      .attr('font-weight', 'bold')
+      .attr('fill', '#333')
       .text('Publication Growth Rate (%)');
 
-    // Add y-axis label
+    // Add y-axis label with improved visibility
     g.append('text')
       .attr('class', 'y-axis-label')
       .attr('transform', 'rotate(-90)')
       .attr('x', -innerHeight / 2)
       .attr('y', -50)
       .attr('text-anchor', 'middle')
+      .attr('font-size', '14px')
+      .attr('font-weight', 'bold')
+      .attr('fill', '#333')
       .text('S&P 500 Return (%)');
 
     // Add legend
@@ -348,7 +400,7 @@ export default function SP500PublicationChart() {
     // Legend items
     const metrics = [
       { name: 'Data Points', color: '#4682b4' },
-      { name: 'Regression Line', color: '#ff7f0e' }
+      { name: 'Regression Line', color: correlationValue < 0 ? '#dc2626' : '#16a34a' } // Red for negative, green for positive
     ];
 
     metrics.forEach((metric, i) => {
@@ -371,12 +423,13 @@ export default function SP500PublicationChart() {
         .style('font-weight', 'normal');
     });
 
-    // Add correlation info
+    // Add correlation info with color based on value
     svg.append('text')
       .attr('class', 'correlation-info')
       .attr('x', width - margin.right + 20)
       .attr('y', margin.top + 70)
       .style('font-size', '12px')
+      .style('fill', correlationValue < 0 ? '#dc2626' : '#16a34a') // Red for negative, green for positive
       .text(`Correlation: ${correlationValue.toFixed(2)}`);
 
   }, [dimensions, lag, comparisonMode, correlationValue, chartData]);
@@ -391,26 +444,7 @@ export default function SP500PublicationChart() {
       <div className="flex flex-col items-center">
         <div className="w-full mb-6 p-6 bg-gray-50 rounded-lg shadow-sm border border-gray-100">
           <div className="flex flex-col md:flex-row justify-between items-center gap-6 mb-5">
-            <div className="flex flex-col w-full md:w-auto gap-2">
-              <div className="flex items-center justify-between">
-                <span className="font-semibold text-gray-800">Lag (Years)</span>
-                <span className="text-sm font-mono bg-white px-3 py-1.5 rounded-md border shadow-sm text-gray-800 font-medium">{lag}</span>
-              </div>
-              <input
-                type="range"
-                min="0"
-                max="10"
-                value={lag}
-                onChange={(e) => setLag(parseInt(e.target.value))}
-                className="w-full md:w-60 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
-              />
-              <div className="flex justify-between text-xs text-gray-600 px-0.5">
-                <span>0</span>
-                <span>5</span>
-                <span>10</span>
-              </div>
-            </div>
-            
+            {/* Comparison Mode - Left */}
             <div className="flex flex-col w-full md:w-auto gap-2">
               <span className="font-semibold text-gray-800">Comparison Mode</span>
               <div className="flex gap-2">
@@ -437,20 +471,41 @@ export default function SP500PublicationChart() {
               </div>
             </div>
             
-            <div className="flex flex-col w-full md:w-auto gap-2">
+            {/* Correlation - Middle */}
+            <div className="flex flex-col w-full md:w-auto gap-2 items-center">
               <span className="font-semibold text-gray-800">Correlation</span>
-              <div className="text-lg font-mono bg-white px-4 py-2 rounded-md border shadow-sm text-gray-800 font-medium">
+              <div className="text-lg font-mono bg-white px-4 py-2 rounded-md border shadow-sm font-medium"
+                   style={{ color: correlationValue < 0 ? '#dc2626' : '#16a34a' }}>
                 {correlationValue.toFixed(4)}
               </div>
             </div>
+            
+            {/* Lag Slider - Right, only visible when in lagged mode */}
+            {comparisonMode === 'lagged' && (
+              <div className="flex flex-col w-full md:w-auto gap-2">
+                <div className="flex items-center justify-between">
+                  <span className="font-semibold text-gray-800">Lag (Years)</span>
+                  <span className="text-sm font-mono bg-white px-3 py-1.5 rounded-md border shadow-sm text-gray-800 font-medium">{lag}</span>
+                </div>
+                <input
+                  type="range"
+                  min="0"
+                  max="10"
+                  value={lag}
+                  onChange={(e) => setLag(parseInt(e.target.value))}
+                  className="w-full md:w-60 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
+                />
+                <div className="flex justify-between text-xs text-gray-600 px-0.5">
+                  <span>0</span>
+                  <span>5</span>
+                  <span>10</span>
+                </div>
+              </div>
+            )}
           </div>
           
           <div className="text-sm text-gray-700 bg-white p-3 rounded-md border border-gray-100">
-            {comparisonMode === 'normal' ? (
-              <p>Comparing S&P 500 returns with publication growth rates from the same years.</p>
-            ) : (
-              <p>Comparing S&P 500 returns with publication growth rates from <span className="font-semibold">{lag} year{lag !== 1 ? 's' : ''}</span> earlier.</p>
-            )}
+            Comparing S&P 500 returns with publication growth rates from {comparisonMode === 'lagged' ? `${lag} year${lag > 1 ? 's' : ''} earlier` : 'in the same year'}.
           </div>
         </div>
         
