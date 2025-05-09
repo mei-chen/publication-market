@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import Link from 'next/link';
+import { ArrowRight } from 'lucide-react';
 import SP500PublicationChart from './components/charts/SP500PublicationChart';
 
 export default function Home() {
@@ -29,10 +30,11 @@ export default function Home() {
         
         <div className="flex justify-center mt-8">
           <Link
-            className="rounded-full border border-solid border-gray-200 bg-gray-100 transition-colors flex items-center justify-center hover:bg-gray-200 font-medium text-base h-12 px-6"
+            className="rounded-full border-none bg-blue-600 text-white transition-all flex items-center justify-center hover:bg-blue-700 font-semibold text-lg h-14 px-8 shadow-md hover:shadow-lg gap-2 transform hover:scale-105"
             href="/correlation"
           >
             View Detailed Analysis
+            <ArrowRight className="w-5 h-5 ml-1" />
           </Link>
         </div>
       </main>
