@@ -334,10 +334,10 @@ export default function SP500PublicationChart() {
             .style('left', `${event.pageX + 10}px`)
             .style('top', `${event.pageY - 28}px`)
             .html(`
-              <div class="font-bold">Year: ${d.year}</div>
-              <div>Publication Growth: ${pubGrowthValue?.toFixed(2)}%</div>
-              <div>S&P 500 Return: ${d.return_pct?.toFixed(2)}%</div>
-              <div>Publication Count: ${d.count.toLocaleString()}</div>
+              <div class="text-base font-bold mb-1 text-gray-900">Year: ${d.year}</div>
+              <div class="py-0.5 text-gray-800"><span class="font-semibold">Publication Growth:</span> ${pubGrowthValue?.toFixed(2)}%</div>
+              <div class="py-0.5 text-gray-800"><span class="font-semibold">S&P 500 Return:</span> ${d.return_pct?.toFixed(2)}%</div>
+              <div class="py-0.5 text-gray-800"><span class="font-semibold">Publication Count:</span> ${d.count.toLocaleString()}</div>
             `);
         });
         
@@ -549,7 +549,8 @@ export default function SP500PublicationChart() {
         />
         <div
           ref={tooltipRef}
-          className="absolute hidden bg-white p-2 rounded shadow-lg border border-gray-200 text-sm z-10"
+          className="absolute hidden bg-white p-3 rounded-md shadow-lg border border-gray-300 text-sm z-10 font-medium text-gray-800 min-w-[180px]"
+          style={{ boxShadow: '0 4px 12px rgba(0,0,0,0.15)' }}
         />
         
 
