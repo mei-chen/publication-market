@@ -1,6 +1,6 @@
 # Publication Markets: Academic Research & Financial Markets Correlation Analysis
 
-![Publication Markets Screenshot](https://via.placeholder.com/800x400?text=Publication+Markets+Dashboard)
+![Publication Markets App](https://publicationmarket.com)
 
 ## Description
 
